@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+SUBCOMMAND="$1"
+
+case "$SUBCOMMAND" in
+  nuke)
+	RUNNING_CONTAINERS=$(docker ps -q | tr '\n' ' ')
+	if [ -n "$RUNNING_CONTAINERS" ]; then
+		echo Stopping all containers.
+		docker stop $RUNNING_CONTAINERS
+	else
+		echo "No running containers."
+	fi
+
+	CONTAINERS=$(docker ps -q -a | tr '\n' ' ')
+	if [ -n "$CONTAINERS" ]; then
+		echo Deleting all stopped containers.
+		docker rm -f $CONTAINERS
+	else
+		echo "No containers."
+	fi
+
+	IMAGES=$(docker images -a -q | tr '\n' ' ')
+	if [ -n "$IMAGES" ]; then
+		echo Deleting all images.
+		docker rmi $IMAGES
+	else
+		echo No images.
+	fi
+    ;;
+  help)
+   cat && cat<<EOF
+    nuke                                            stop and delete all containers and images.
+EOF
+    ;;
+esac
