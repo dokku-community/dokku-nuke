@@ -1,0 +1,4 @@
+[plugin]
+description = "stop all running containers, then delete all containers and images"
+version = "1.0.0"
+[plugin.config]
