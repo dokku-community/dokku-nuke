@@ -1,37 +1,46 @@
 #!/usr/bin/env bash
 set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 
-SUBCOMMAND="$1"
-
-case "$SUBCOMMAND" in
+case "$1" in
   nuke)
-	RUNNING_CONTAINERS=$(docker ps -q | tr '\n' ' ')
-	if [ -n "$RUNNING_CONTAINERS" ]; then
-		echo Stopping all containers.
-		docker stop $RUNNING_CONTAINERS
-	else
-		echo "No running containers."
-	fi
+    RUNNING_CONTAINERS=$(docker ps -q | tr '\n' ' ')
+    if [ -n "$RUNNING_CONTAINERS" ]; then
+      dokku_log_info1_quiet "Stopping all containers"
+      docker stop $RUNNING_CONTAINERS
+    else
+      dokku_log_verbose_quiet "No running containers"
+    fi
 
-	CONTAINERS=$(docker ps -q -a | tr '\n' ' ')
-	if [ -n "$CONTAINERS" ]; then
-		echo Deleting all stopped containers.
-		docker rm -f $CONTAINERS
-	else
-		echo "No containers."
-	fi
+    CONTAINERS=$(docker ps -q -a | tr '\n' ' ')
+    if [ -n "$CONTAINERS" ]; then
+      dokku_log_info1_quiet "Deleting all stopped containers"
+      docker rm -f $CONTAINERS
+    else
+      dokku_log_verbose_quiet "No containers"
+    fi
 
-	IMAGES=$(docker images -a -q | tr '\n' ' ')
-	if [ -n "$IMAGES" ]; then
-		echo Deleting all images.
-		docker rmi $IMAGES
-	else
-		echo No images.
-	fi
+    IMAGES=$(docker images -a -q | tr '\n' ' ')
+    if [ -n "$IMAGES" ]; then
+      dokku_log_info1_quiet "Deleting all images"
+      docker rmi $IMAGES
+    else
+      dokku_log_verbose_quiet "No images"
+    fi
     ;;
-  help)
-   cat && cat<<EOF
-    nuke                                            stop and delete all containers and images.
+
+  help | nuke:help)
+    HELP=$(cat<<EOF
+    nuke, stop and delete all containers and images.
 EOF
+)
+    if [[ -n $DOKKU_API_VERSION ]]; then
+      echo "$HELP"
+    else
+      cat && echo "$HELP"
+    fi
+    ;;
+
+  *)
+    exit $DOKKU_NOT_IMPLEMENTED_EXIT
     ;;
 esac
