@@ -19,15 +19,6 @@ case "$1" in
 help_content
     }
 
-    help_list_func() {
-      # shellcheck disable=SC2034
-      declare desc="return $PLUGIN_COMMAND_PREFIX plugin help content"
-      cat<<help_list
------> Ports available for playground
-       32771
-help_list
-    }
-
     if [[ $1 = "$PLUGIN_COMMAND_PREFIX:help" ]] ; then
       echo -e "Usage: dokku $PLUGIN_COMMAND_PREFIX[:COMMAND] <app>"
       echo ''
@@ -36,6 +27,7 @@ help_list
       echo 'Example:'
       echo ''
       echo "\$ dokku $PLUGIN_COMMAND_PREFIX"
+      echo ''
       echo 'Additional commands:'
       help_content_func | sort | column -c2 -t -s,
     elif [[ $(ps -o command= $PPID) == *"--all"* ]]; then
