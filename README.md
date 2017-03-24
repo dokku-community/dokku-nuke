@@ -1,4 +1,4 @@
-# dokku-nuke [![Build Status](https://img.shields.io/travis/josegonzalez/dokku-nuke.svg?branch=master "Build Status")](https://travis-ci.org/josegonzalez/dokku-nuke)
+# dokku-nuke [![Build Status](https://img.shields.io/travis/dokku-community/dokku-nuke.svg?branch=master "Build Status")](https://travis-ci.org/josegonzalez/dokku-nuke)
 
 Stop all running containers, then delete all containers and images.
 
